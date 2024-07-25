@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import {Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
 
@@ -15,10 +17,36 @@ const Login = () => {
     }))
   }
 
+  const handleLoginSubmit=async(e)=>{
+    e.preventDefault();
+
+    try{
+      const response = await axios.post('http://localhost:8000/login',LoginData);
+
+      const {success,message} = response.data;
+
+      if(success)
+      {
+        console.log('Login Successfully');
+      }
+      else{
+        console.log(message);
+      }
+    }
+    catch(error){
+      console.error('Login error',error);
+    }
+
+    setLoginData({
+      username:'',
+      password:'',
+    })
+  }
+
   return (
     <div>
         <h1>Login Page</h1>
-        <form>
+        <form onSubmit={handleLoginSubmit}>
           Username:
           <input 
           type='text' 
@@ -38,6 +66,12 @@ const Login = () => {
           value={LoginData.password}
           onChange={handleLoginChange}
           />
+          <button type='submit'>Login</button>
+          <br />
+          <p>
+          Not Registerd yet?
+          <Link to ='/registration'>Register Here</Link>
+          </p>
         </form>
     </div>
   )
